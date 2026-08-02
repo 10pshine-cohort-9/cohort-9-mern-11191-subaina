@@ -16,7 +16,7 @@ class NoteService {
   }
 
   async getAllNotes(ownerId) {
-    return this.noteRepository.findAllByOwner(ownerId);
+    return this.noteRepository.findAllbyOwner(ownerId);
   }
 
   async getNoteById(noteId, ownerId) {
