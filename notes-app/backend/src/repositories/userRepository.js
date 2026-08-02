@@ -18,6 +18,10 @@ class userRepository{
  async findByIdWithoutPassword(id) {
    return this.model.findById(id).select('+password');
  }
+
+ async findByEmailWithPassword(email) {
+    return this.model.findOne({ email }).select('+password');
+  }
 }
 
 module.exports = userRepository;
