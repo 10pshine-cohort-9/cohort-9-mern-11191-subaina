@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "mocha --recursive test"
+     "test": "mocha"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -18,7 +18,9 @@
     "pino-http": "^10.2.0"
   },
   "devDependencies": {
-    "mocha": "^10.7.0",
-    "nodemon": "^3.1.4"
+    "chai": "^6.2.2",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.4",
+    "sinon": "^22.1.0"
   }
 }
