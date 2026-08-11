@@ -1,10 +1,15 @@
 const User = require('../models/User');
+const BlacklistedToken = require('../models/BlacklistedToken');
 const UserRepository = require('../repositories/userRepository');
+const TokenBlacklistRepository = require('../repositories/tokenBlacklistRepository');
 const AuthService = require('../services/authService');
 const asyncHandler = require('../utils/asyncHandler');
 
+
 const userRepository = new UserRepository(User);
-const authService = new AuthService(userRepository);
+const tokenBlacklistRepository = new TokenBlacklistRepository(BlacklistedToken);
+const authService = new AuthService(userRepository, tokenBlacklistRepository);
+
 
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -30,4 +35,10 @@ const getMe = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { signup, login, getMe };
+const logout = asyncHandler(async (req, res) => {
+  await authService.logout(req.token);
+
+  res.status(200).json({ message: 'Logged out successfully' });
+})
+
+module.exports = { signup, login, getMe, logout};

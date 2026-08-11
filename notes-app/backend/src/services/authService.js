@@ -1,10 +1,13 @@
 const generateToken = require('../utils/generateToken');
 const ApiError = require('../utils/ApiError');
+const jwt = require('jsonwebtoken');
 
 class AuthService {
-  constructor(userRepository) {
+  constructor(userRepository, tokenBlacklistRepository) {
     this.userRepository = userRepository;
+    this.tokenBlacklistRepository = tokenBlacklistRepository;
   }
+
 
   async signup({ name, email, password }) {
     const existingUser = await this.userRepository.findByEmail(email);
@@ -53,6 +56,12 @@ class AuthService {
        };
 
   }
+  async logout(token) {
+     const decoded = jwt.decode(token);
+     const expiresAt = new Date(decoded.exp * 1000);
+
+     await this.tokenBlacklistRepository.add(token, expiresAt);
+   }
 }
 
 

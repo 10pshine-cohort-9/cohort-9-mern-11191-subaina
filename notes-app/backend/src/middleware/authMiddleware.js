@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const BlacklistedToken = require('../models/BlacklistedToken');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -7,10 +8,15 @@ const protect = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-     throw new ApiError(401, "Not authorized, no token");
+    throw new ApiError(401, 'Not authorized, no token');
   }
 
   const token = authHeader.split(' ')[1];
+
+  const isBlacklisted = await BlacklistedToken.findOne({ token });
+  if (isBlacklisted) {
+    throw new ApiError(401, 'Not authorized, token has been logged out');
+  }
 
   let decoded;
   try {
@@ -21,13 +27,13 @@ const protect = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(decoded.id);
 
-    if (!user) {
-      throw new ApiError(401, 'Not authorized, user no longer exists');
-    }
+  if (!user) {
+    throw new ApiError(401, 'Not authorized, user no longer exists');
+  }
 
   req.user = user;
+  req.token = token;
   next();
-
-
 });
+
 module.exports = protect;

@@ -33,8 +33,7 @@ describe('AuthService', () => {
         }),
       };
 
-      const authService = new AuthService(fakeUserRepository);
-
+      const authService = new AuthService(fakeUserRepository, {});
       const result = await authService.signup({
         name: 'Subaina',
         email: 'subaina@test.com',
