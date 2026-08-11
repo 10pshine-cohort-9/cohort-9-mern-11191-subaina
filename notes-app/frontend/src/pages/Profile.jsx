@@ -1,14 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { LogOut, NotebookText, CalendarDays } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../hooks/useAuth'
 import '../styles/Profile.css'
-
-const mockUser = {
-  name: 'Subaina Monib',
-  email: 'subaina@example.com',
-  notesCreated: 12,
-  memberSince: 'Jan 2026',
-}
 
 function getInitials(name) {
   return name
@@ -20,7 +14,13 @@ function getInitials(name) {
 }
 
 function Profile() {
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
+
+  async function handleLogout() {
+    await logout()
+    navigate('/login')
+  }
 
   return (
     <div className="profile-page">
@@ -29,26 +29,11 @@ function Profile() {
 
       <main className="profile-main">
         <div className="glass-card profile-card">
-          <div className="profile-avatar">{getInitials(mockUser.name)}</div>
-          <h1>{mockUser.name}</h1>
-          <p className="profile-email">{mockUser.email}</p>
+          <div className="profile-avatar">{getInitials(user.name)}</div>
+          <h1>{user.name}</h1>
+          <p className="profile-email">{user.email}</p>
 
-          <div className="profile-stats">
-            <span className="stat-pill">
-              <NotebookText size={14} />
-              {mockUser.notesCreated} notes created
-            </span>
-            <span className="stat-pill">
-              <CalendarDays size={14} />
-              Member since {mockUser.memberSince}
-            </span>
-          </div>
-
-          <button
-            type="button"
-            className="btn btn-outline"
-            onClick={() => navigate('/login')}
-          >
+          <button type="button" className="btn btn-outline" onClick={handleLogout}>
             <LogOut size={16} />
             Logout
           </button>
