@@ -30,4 +30,4 @@ class noteRepository {
 
 
 }
-  module.exports = NoteRepository;
+  module.exports = noteRepository;
