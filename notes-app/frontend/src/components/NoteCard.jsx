@@ -38,7 +38,7 @@ function NoteCard({ id, title, content, tag, color = 'coral', updatedAt }) {
       }}
     >
       <div className="note-card-header">
-        <span className={`tag tag-${color}`}>{tag}</span>
+        {tag && <span className={`tag tag-${color}`}>{tag}</span>}
         <span className="note-card-time">{relativeTime(updatedAt)}</span>
       </div>
       <h3 className="note-card-title">{title}</h3>

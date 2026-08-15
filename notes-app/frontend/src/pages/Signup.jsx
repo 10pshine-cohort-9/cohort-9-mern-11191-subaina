@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, User, NotebookPen } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 import '../styles/Auth.css'
 
 function Signup() {
@@ -10,14 +11,39 @@ function Signup() {
     password: '',
     confirmPassword: '',
   })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const { signup } = useAuth()
+  const navigate = useNavigate()
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    console.log('signup submit', form)
+    setError('')
+
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      await signup({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      })
+      navigate('/')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Signup failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -28,11 +54,12 @@ function Signup() {
           <NotebookPen size={22} />
           <span>Notes</span>
         </div>
-
         <div className="auth-heading">
           <h1>Create your account</h1>
           <p>A calmer place to keep your notes.</p>
         </div>
+
+        {error && <p className="auth-error">{error}</p>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label className="field-icon-wrap">
@@ -47,7 +74,6 @@ function Signup() {
               required
             />
           </label>
-
           <label className="field-icon-wrap">
             <Mail size={18} />
             <input
@@ -60,7 +86,6 @@ function Signup() {
               required
             />
           </label>
-
           <label className="field-icon-wrap">
             <Lock size={18} />
             <input
@@ -73,7 +98,6 @@ function Signup() {
               required
             />
           </label>
-
           <label className="field-icon-wrap">
             <Lock size={18} />
             <input
@@ -86,9 +110,8 @@ function Signup() {
               required
             />
           </label>
-
-          <button type="submit" className="btn btn-primary auth-submit">
-            Create account
+          <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+            {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 

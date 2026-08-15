@@ -1,18 +1,34 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, NotebookPen } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 import '../styles/Auth.css'
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    console.log('login submit', form)
+    setError('')
+    setLoading(true)
+
+    try {
+      await login({ email: form.email, password: form.password })
+      navigate('/')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -28,6 +44,8 @@ function Login() {
           <h1>Welcome back</h1>
           <p>Log in to keep writing where you left off.</p>
         </div>
+
+        {error && <p className="auth-error">{error}</p>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label className="field-icon-wrap">
@@ -56,8 +74,8 @@ function Login() {
             />
           </label>
 
-          <button type="submit" className="btn btn-primary auth-submit">
-            Log in
+          <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Log in'}
           </button>
         </form>
 

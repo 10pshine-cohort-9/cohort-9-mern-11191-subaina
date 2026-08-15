@@ -1,25 +1,44 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, Plus, NotebookPen } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import NoteCard from '../components/NoteCard'
-import { mockNotes } from '../mockNotes'
+import { getNotes } from '../api/noteApi'
 import '../styles/Dashboard.css'
 
 function Dashboard() {
   const [query, setQuery] = useState('')
+  const [notes, setNotes] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    loadNotes()
+  }, [])
+
+  async function loadNotes() {
+    setLoading(true)
+    setError('')
+
+    try {
+      const data = await getNotes()
+      setNotes(data)
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to load notes. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredNotes = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return mockNotes
-    return mockNotes.filter(
+    if (!q) return notes
+    return notes.filter(
       (note) =>
-        note.title.toLowerCase().includes(q) ||
-        note.tag.toLowerCase().includes(q) ||
-        note.content.toLowerCase().includes(q)
+        note.title.toLowerCase().includes(q) || note.content.toLowerCase().includes(q)
     )
-  }, [query])
+  }, [query, notes])
 
   return (
     <div className="dashboard-page">
@@ -49,10 +68,26 @@ function Dashboard() {
           </button>
         </div>
 
-        {filteredNotes.length > 0 ? (
+        {loading ? (
+          <p>Loading notes...</p>
+        ) : error ? (
+          <div className="empty-state">
+            <h2>Something went wrong</h2>
+            <p>{error}</p>
+            <button type="button" className="btn btn-primary" onClick={loadNotes}>
+              Retry
+            </button>
+          </div>
+        ) : filteredNotes.length > 0 ? (
           <div className="notes-grid">
             {filteredNotes.map((note) => (
-              <NoteCard key={note.id} {...note} />
+              <NoteCard
+                key={note._id}
+                id={note._id}
+                title={note.title}
+                content={note.content}
+                updatedAt={note.updatedAt}
+              />
             ))}
           </div>
         ) : (
