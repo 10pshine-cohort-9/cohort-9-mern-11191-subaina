@@ -4,6 +4,7 @@ import { Search, Plus, NotebookPen } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import NoteCard from '../components/NoteCard'
 import { getNotes } from '../api/noteApi'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import '../styles/Dashboard.css'
 
 function Dashboard() {
@@ -25,7 +26,7 @@ function Dashboard() {
       const data = await getNotes()
       setNotes(data)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load notes. Please try again.')
+      setError(getErrorMessage(err, 'Failed to load notes. Please try again.'))
     } finally {
       setLoading(false)
     }

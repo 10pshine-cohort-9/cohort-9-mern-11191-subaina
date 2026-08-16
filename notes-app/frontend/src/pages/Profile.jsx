@@ -16,6 +16,7 @@ function getInitials(name) {
 function Profile() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
   async function handleLogout() {
     await logout()
@@ -29,11 +30,29 @@ function Profile() {
 
       <main className="profile-main">
         <div className="glass-card profile-card">
-          <div className="profile-avatar">{getInitials(user.name)}</div>
-          <h1>{user.name}</h1>
-          <p className="profile-email">{user.email}</p>
+          <div className="profile-avatar">{getInitials(user?.name ?? '?')}</div>
+          <h1>{user?.name}</h1>
+          <p className="profile-email">{user?.email}</p>
 
-          <button type="button" className="btn btn-outline" onClick={handleLogout}>
+          <div className="profile-stats">
+            <span className="stat-pill">
+              <NotebookText size={14} />
+              12 notes created
+            </span>
+            <span className="stat-pill">
+              <CalendarDays size={14} />
+              Member since Jan 2026
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={async () => {
+              await logout()
+              navigate('/login')
+            }}
+          >
             <LogOut size={16} />
             Logout
           </button>

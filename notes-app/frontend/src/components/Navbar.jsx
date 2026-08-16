@@ -48,15 +48,15 @@ function Navbar() {
           className="navbar-avatar-btn"
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <span className="navbar-avatar">{getInitials(user.name)}</span>
+          <span className="navbar-avatar">{getInitials(user?.name ?? '?')}</span>
           <ChevronDown size={16} />
         </button>
 
         {menuOpen && (
           <div className="navbar-dropdown">
             <div className="navbar-dropdown-user">
-              <span className="navbar-dropdown-name">{user.name}</span>
-              <span className="navbar-dropdown-email">{user.email}</span>
+              <span className="navbar-dropdown-name">{user?.name}</span>
+              <span className="navbar-dropdown-email">{user?.email}</span>
             </div>
             <Link
               to="/profile"
@@ -69,7 +69,11 @@ function Navbar() {
             <button
               type="button"
               className="navbar-dropdown-item"
-              onClick={handleLogout}
+              onClick={async () => {
+                setMenuOpen(false)
+                await logout()
+                navigate('/login')
+              }}
             >
               <LogOut size={16} />
               Logout
