@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, User, NotebookPen } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import '../styles/Auth.css'
 
 function Signup() {
@@ -40,7 +41,7 @@ function Signup() {
       })
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.')
+      setError(getErrorMessage(err, 'Signup failed. Please try again.'))
     } finally {
       setLoading(false)
     }

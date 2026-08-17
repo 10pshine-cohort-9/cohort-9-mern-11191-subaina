@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, NotebookPen } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import '../styles/Auth.css'
 
 function Login() {
@@ -25,7 +26,7 @@ function Login() {
       await login({ email: form.email, password: form.password })
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.')
+      setError(getErrorMessage(err, 'Login failed. Please try again.'))
     } finally {
       setLoading(false)
     }
