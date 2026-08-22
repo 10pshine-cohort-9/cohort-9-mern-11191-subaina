@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import ReactQuill from 'react-quill-new'
-import { X, Check, Trash2 } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import { getNoteById, createNote, updateNote } from '../api/noteApi'
 import { getErrorMessage } from '../utils/getErrorMessage'

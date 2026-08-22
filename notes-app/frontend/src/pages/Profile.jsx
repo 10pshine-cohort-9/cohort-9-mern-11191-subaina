@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { LogOut } from 'lucide-react'
+import { LogOut, NotebookText, CalendarDays } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../hooks/useAuth'
 import '../styles/Profile.css'
@@ -16,7 +16,6 @@ function getInitials(name) {
 function Profile() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
 
   async function handleLogout() {
     await logout()
@@ -48,10 +47,7 @@ function Profile() {
           <button
             type="button"
             className="btn btn-outline"
-            onClick={async () => {
-              await logout()
-              navigate('/login')
-            }}
+            onClick={handleLogout}
           >
             <LogOut size={16} />
             Logout

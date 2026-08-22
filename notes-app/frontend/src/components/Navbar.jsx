@@ -69,11 +69,7 @@ function Navbar() {
             <button
               type="button"
               className="navbar-dropdown-item"
-              onClick={async () => {
-                setMenuOpen(false)
-                await logout()
-                navigate('/login')
-              }}
+              onClick={handleLogout}
             >
               <LogOut size={16} />
               Logout
