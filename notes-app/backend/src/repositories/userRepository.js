@@ -13,7 +13,7 @@ class userRepository{
     if (typeof email !== 'string') {
       throw new ApiError(400, 'Invalid email format');
     }
-    return this.model.findOne({ email });
+    return this.model.findOne({ email: String(email) });
   }
 
  async findById(id) {
@@ -28,7 +28,7 @@ class userRepository{
     if (typeof email !== 'string') {
       throw new ApiError(400, 'Invalid email format');
     }
-    return this.model.findOne({ email }).select('+password');
+    return this.model.findOne({ email: String(email) }).select('+password');
   }
 }
 
