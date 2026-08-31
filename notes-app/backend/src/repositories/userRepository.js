@@ -1,3 +1,5 @@
+const ApiError = require('../utils/ApiError');
+
 class userRepository{
   constructor(model) {
     this.model=model;
@@ -8,7 +10,10 @@ class userRepository{
   }
 
   async findByEmail(email) {
-    return this.model.findOne({ email });
+    if (typeof email !== 'string') {
+      throw new ApiError(400, 'Invalid email format');
+    }
+    return this.model.findOne({ email: String(email) });
   }
 
  async findById(id) {
@@ -20,7 +25,10 @@ class userRepository{
  }
 
  async findByEmailWithPassword(email) {
-    return this.model.findOne({ email }).select('+password');
+    if (typeof email !== 'string') {
+      throw new ApiError(400, 'Invalid email format');
+    }
+    return this.model.findOne({ email: String(email) }).select('+password');
   }
 }
 

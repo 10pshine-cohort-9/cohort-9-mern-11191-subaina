@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import '../styles/NoteCard.css'
 
 function stripHtml(html) {
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  return html.replace(/<[^<>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 function truncate(text, max = 110) {
@@ -28,14 +28,10 @@ function NoteCard({ id, title, content, tag, color = 'coral', updatedAt }) {
   const navigate = useNavigate()
 
   return (
-    <article
+    <button
+      type="button"
       className="note-card"
       onClick={() => navigate(`/notes/${id}`)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') navigate(`/notes/${id}`)
-      }}
     >
       <div className="note-card-header">
         {tag && <span className={`tag tag-${color}`}>{tag}</span>}
@@ -43,7 +39,7 @@ function NoteCard({ id, title, content, tag, color = 'coral', updatedAt }) {
       </div>
       <h3 className="note-card-title">{title}</h3>
       <p className="note-card-preview">{truncate(stripHtml(content))}</p>
-    </article>
+    </button>
   )
 }
 
